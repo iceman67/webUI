@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>CDM</title>
+
+    <link rel="shortcut icon" href="data:image/x-icon" type="image/x-icon"> <!-- favicon 없을 때 에러 방지 코드 -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="../static/upload.css" type="text/css"> -->
+    
+    <!-- <link rel="stylesheet" href="http://cdn.webix.com/edge/webix.css" type="text/css"> -->
+    <link rel="stylesheet" href="../static/Provider_style.css" type="text/css">
+
+    <link rel="stylesheet" href="//cdn.webix.com/materialdesignicons/5.8.95/css/materialdesignicons.min.css"
+        type="text/css" charset="utf-8">
+    <script src="//cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+    <script>
+        {% if authorization %}
+        webix.ready(() => {
+            webix.ui({
+                rows: [
+                    {
+                        view: "toolbar",
+                        css: { "background-color": "lightgray" },
+                        elements: [
+                            {
+                                view: "button", value: "IRB", width: 100, css: "webix_transparent webix_button",
+                                click: () => { location.href = "/irb" },
+                            },
+                            {
+                                view: "button", value: "Researcher", width: 100, css: "webix_transparent webix_button",
+                                click: () => { location.href = "/researcher-irb" }
+                            },
+                            {
+                                view: "button", value: "Provider", width: 100, css: "webix_transparent webix_button",
+                                click: () => { location.href = "/provider" }
+                            },
+                            {
+                                view: "button", value: "Consumer", width: 100, css: "webix_transparent webix_button",
+                                click: () => { location.href = "/consumer" }
+                            }
+                        ]
+                    },
+                    {
+                        view: "scrollview",
+                        scroll: "auto",
+                        body: {
+                            rows: [
+                                {
+                                    view: "toolbar", height: 80, css: {"background-color": "#AFCFD1"},
+                                    elements: [
+                                        {
+                                            view: "button", value: "<span style='font-size: 1.5em;'>Provider</span>",
+                                            width: 100, css: "webix_transparent",
+                                            click: () => { location.href = "/provider"; }
+                                        },
+                                        {
+                                            align: "right",
+                                            body: {
+                                                height: 80, cols: [
+                                                    {
+                                                        view: "button", value: "<span style='font-size: 1.1em;'>Invitation</span>",
+                                                        width: 100, css: "webix_transparent",
+                                                        click: () => { location.href="/provider/invitation"; }
+                                                    },
+                                                    {
+                                                        view: "button", value: "<span style='font-size: 1.1em;'>Credential Acceptance</span>",
+                                                        autowidth: true,css: "webix_transparent",
+                                                        click: () => { location.href="/provider/credential"; }
+                                                    },
+                                                    {
+                                                        view: "button", value: "<span style='font-size: 1.1em;'>Data Selection</span>",
+                                                        width: 150, css: "webix_transparent",
+                                                        click: () => { location.href = "/provider/data"; }
+                                                    },
+                                                    { view: "spacer", width: 20 }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                },
+                                {
+                                    view: "spacer", height: 30
+                                },
+                                {
+                                    align: "center",
+                                    body: {
+                                        rows: [
+                                            {
+                                                template: "<h2>Provider Data Selection</h2>",
+                                                width: 700, autoheight: true
+                                            },
+                                            {
+                                                view: "form", id: "dataSelect_form", width: 700, height: 600,
+                                                elements: [
+                                                    {
+                                                        cols: [
+                                                            { view: "search", id: "search", placeholder: "data name", width: 370, hotkey: "enter" },
+                                                            {
+                                                                view: "button", value: "Select this data",
+                                                                width: 145, click: () => {
+                                                                    var selectedFile = $$("dataView").getSelectedItem();
+                                                                    if (selectedFile) {
+                                                                        var title = selectedFile.title;
+
+                                                                        var values = { "file": title }; // JSON 형태
+                                                                        webix.ajax().post("/provider/send-data-consumer", JSON.stringify(values)) // consumer한테 데이터 전송
+                                                                            .then((res) => {
+                                                                                alert("Provider가 당신이 선택한 데이터를 Consumer에게 전송하였습니다.\nIssue Credential 버튼을 클릭해주세요.");
+                                                                                $$("issue_cred").show(true, false);
+                                                                            })
+                                                                            .fail((xhr) => {
+                                                                                alert("Provider: Consumer에게 데이터 전송 과정 중 오류 발생");
+                                                                            });
+                                                                    } else {
+                                                                        alert("선택된 파일이 없습니다.");
+                                                                    }
+                                                                }
+                                                            },
+                                                            {
+                                                                view: "button", id: "issue_cred", value: "Issue Credential",
+                                                                width: 145, hidden: true, css: "webix_transparent webix_button",
+                                                                click: () => {
+                                                                    webix.ajax().post("/provider/issue-credential")
+                                                                        .then((res) => {
+                                                                            alert("Provider로부터 증명서를 발급받았습니다.\nConsumer 페이지로 이동하여 초대장을 발급받으세요.");
+                                                                        })
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        view: "dataview", id: "dataView", select: true, scroll: "y",
+                                                        template: "#id#. #title#", xCount: 1,
+                                                        type: {
+                                                            width: 600,
+                                                            autoheight: true,
+                                                        },
+                                                        data: [
+                                                            {% for index, title in file_dict.items() %}
+                                                            {'id': `{{index}}`, 'title': `{{title}}`},
+                                                            {% endfor %}
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                view: "spacer", height: 30
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            });
+
+            /* 검색 기능 구현 */
+            $$("search").attachEvent("onTimedKeyPress", () => {
+                var value = $$("search").getValue().toLowerCase();
+                $$("dataView").filter((obj) => {
+                    return obj.title.toLowerCase().indexOf(value) != -1;
+                })
+            });
+
+        });
+        {% else %}
+        alert("Researcher에게 Credential을 다시 발급받으시오.\n메인 페이지로 이동합니다.");
+        location.href="/provider";
+        {% endif %}
+    </script>
+</body>
+
+</html>
