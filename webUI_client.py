@@ -3,7 +3,6 @@ import array
 import struct
 
 
-
 st = Struct("<B")
 packed_value = st.pack(1)
 print( packed_value )
@@ -24,16 +23,19 @@ print (packed_value)
 
 import socket 
 
-def client_program(bmsg):
+def client_program(header, payload):
     host = "127.0.0.1"  # as both code is running on same pc
-    port = 4000  # socket server port number
+    port = 8700  # socket server port number
 
     client_socket = socket.socket()  # instantiate
     client_socket.connect((host, port))  # connect to the server
 
-    client_socket.sendall (bmsg)  # send message
-    data = client_socket.recv(7) # receive response
+    client_socket.sendall (header)  # send message
+    client_socket.sendall (payload)  # send message
 
+    #data = client_socket.recv(7) # receive response
+    client_socket.close()  # close the connection
+'''
     import binascii
     
     recv = binascii.hexlify(data).decode() # bytes to hex => string
@@ -48,17 +50,17 @@ def client_program(bmsg):
     t = unpack('<i',bytes.fromhex(recv)[3:8])
 
     print ( t[0] )
-
-    client_socket.close()  # close the connection
+'''
 
 
 ## MESSAGE DEFINE
-send_buf = bytearray(7)
-fmt_str = "<BBBi" 
-struct.pack_into(fmt_str, send_buf, 0, 1, 1,15, 2) # offset, v1, v2, v3, v4
-print (send_buf)
+header = bytearray(8)
+fmt_str = "<BBBBi" 
+struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4
+print (header)
+payload  = b'fps10'
 
-byteObject = bytes(send_buf)
+byteObject = bytes(header)
 print (byteObject)
 
-client_program(byteObject)
+client_program(byteObject, payload)
