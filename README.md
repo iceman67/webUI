@@ -11,8 +11,8 @@ $ pip install Flask
 ```
 
 #### 1. define message
-> check $hello.py$
-* make requst a message and handle a response from $Server$  
+> check $struct_test.py$  
+* make requst a message  and handle a response (from $Server$)in $hello.py$   
 ```
 value = request.args.get('fps') # get the value of parameter fps
 header = bytearray(SND_HESDER_SZ)
