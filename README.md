@@ -12,7 +12,8 @@ $ pip install Flask
 
 
 #### 2. run server
-*  it is running on 8700 port
+> it will be raplace with $$Server$$
+*  it is running on 8700 port 
 ```
 python3 webUI_server.py
 ```
