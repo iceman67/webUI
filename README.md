@@ -34,5 +34,10 @@ python3 webUI_server.py
 ```
 $ flask --app hello run --host=0.0.0.0
 ```
+#### 4. update CFG  
 
-
+* connect the following URL (associated with $index.html$ in $templates$ directory) :
+```
+http://127.0.0.1:5000/
+```
+* render HTML ($hello.html$)  with the CFG (fps)  

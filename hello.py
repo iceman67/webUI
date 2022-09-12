@@ -8,6 +8,8 @@ import socket
 import binascii
 from struct import pack, unpack, calcsize
 
+from webUI_server import RCV_HEADER_SZ
+
 app = Flask(__name__)
 
 # call cfg
@@ -15,19 +17,25 @@ app = Flask(__name__)
 def hello_world(name=None):
     return render_template('index.html', name=name)
 
-def client_program(header, payload):
-    host = "127.0.0.1"  # as both code is running on same pc
-    port = 8700  # socket server port number
-    client_socket = socket.socket()  # instantiate
-    client_socket.connect((host, port))  # connect to the server
+host = "127.0.0.1"  # as both code is running on same pc
+port = 8700  # socket server port number
 
+RCV_HEADER_SZ=4
+SND_HESDER_SZ=8
+
+def client_program(header, payload):
+   
+    client_socket = socket.socket()  # instantiate
+    # connect SERVER
+    client_socket.connect((host, port))  # connect to the server
+    # send header (8byte) and payload
     client_socket.sendall (header)  # send message
     client_socket.sendall (payload)  # send message
 
     # receive 4byte
-    data = client_socket.recv(4) # receive response
+    data = client_socket.recv(RCV_HEADER_SZ) # receive response
     print (data)
-    recv = unpack('<i',data) # bytes to hex => string
+    recv = unpack('<i',data) # recv has a tuple with a number
     return recv[0]
 
 # render the response of configuration
@@ -35,9 +43,9 @@ def client_program(header, payload):
 def fps(value=None):
     value = request.args.get('fps')
 
-    header = bytearray(8)
+    header = bytearray(SND_HESDER_SZ)
     fmt_str = "<BBBBi"
-    struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4
+    struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4(sz of payload)
     byteObject = bytes(header)
     payload  = b'fps' + value.encode()
     value  = client_program(byteObject, payload)
