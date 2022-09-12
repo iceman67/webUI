@@ -1,6 +1,6 @@
 ### How to run webUI 
 
-#### 1. make environment 
+#### 0. make environment 
 
 ```
 $ mkdir myproject
@@ -10,6 +10,16 @@ $ . venv/bin/activate
 $ pip install Flask
 ```
 
+#### 1. define message
+```
+value = request.args.get('fps') # get the value of parameter fps
+header = bytearray(8)
+fmt_str = "<BBBBi"
+struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4
+byteObject = bytes(header)
+payload  = b'fps' + value.encode()
+
+```
 
 #### 2. run server
 > it will be raplaced with $Server$
