@@ -11,14 +11,15 @@ $ pip install Flask
 ```
 
 #### 1. define message
+> check $hello.py$
+* make requst a message and handle a response from $Server$  
 ```
 value = request.args.get('fps') # get the value of parameter fps
-header = bytearray(8)
+header = bytearray(SND_HESDER_SZ)
 fmt_str = "<BBBBi"
-struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4
+struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4(sz of payload)
 byteObject = bytes(header)
 payload  = b'fps' + value.encode()
-
 ```
 
 #### 2. run server
