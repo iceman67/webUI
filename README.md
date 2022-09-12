@@ -1,9 +1,9 @@
 ### How to run webUI 
 
 #### 0. make environment 
-
+> you can make a dirctory $myproject$ if you need (optionally)
 ```
-$ mkdir myproject
+$ mkdir myproject  
 $ cd myproject
 $ python3 -m venv venv
 $ . venv/bin/activate
