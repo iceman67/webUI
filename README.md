@@ -41,4 +41,4 @@ $ flask --app hello run --host=0.0.0.0
 http://127.0.0.1:5000/
 ```
 
-* render HTML ($hello.html$)  with the CFG (fps)  
+* render HTML $hello.html$  with the CFG (fps)  
