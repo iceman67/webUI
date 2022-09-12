@@ -31,6 +31,7 @@ python3 webUI_server.py
 ```
 
 #### 3. run flask
+> check $hello.py$
 * it is used for delivering a new configureation to a server
 ```
 $ flask --app hello run --host=0.0.0.0
