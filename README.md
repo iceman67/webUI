@@ -1,6 +1,6 @@
-### how to run webUI 
+### How to run webUI 
 
-####  make environment 
+#### 1. make environment 
 
 ```
 $ mkdir myproject
@@ -11,13 +11,13 @@ $ pip install Flask
 ```
 
 
-####  run server
+#### 2. run server
 *  it is running on 8700 port
 ```
 python3 webUI_server.py
 ```
 
-####  run flask
+#### 3. run flask
 * it is used for delivering a new configureation to a server
 ```
 $ flask --app hello run --host=0.0.0.0
