@@ -11,7 +11,7 @@ $ pip install Flask
 ```
 
 #### 1. define message
-> check $struct\\_test.py$  
+> check $struct\\_test.py$  (using $struct$ package)
 * make requst a message  and handle a response (from $Server$)in $hello.py$   
 ```
 value = request.args.get('fps') # get the value of parameter fps
