@@ -3,11 +3,18 @@
 #### 0. make environment 
 > you can make a dirctory $myproject$ if you need (optionally)
 ```
+Linx 
 $ mkdir myproject  
 $ cd myproject
 $ python3 -m venv venv
 $ . venv/bin/activate
 $ pip install Flask
+
+Windows
+ > py -3 -m venv venv
+ > venv\Scripts\activate
+ > pip install Flask
+
 ```
 
 #### 1. define message
