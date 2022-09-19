@@ -51,3 +51,19 @@ http://127.0.0.1:5000/
 ```
 
 * render HTML $hello.html$  with the CFG (fps)  
+
+
+## SysV IPC 
+
+* WebUI 
+> send a configuration message to message queue (1234)
+```
+$ python webui2sender.py
+```
+
+* Logger
+> receive a configuration message from message queue (1234)
+```
+$ ./logger4receiver
+```
+

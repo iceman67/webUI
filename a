@@ -1,4 +1,0 @@
-fmt_str = "<BBBBi" 
-struct.pack_into(fmt_str, header, 0, 0x01, 0x12, 0xff,0, 5) # offset, v1, v2, v3, v4
-print (header)
-payload  = b'fps10'
